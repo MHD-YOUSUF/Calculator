@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator with History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .calculator {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .display {
+            width: 100%;
+            padding: 10px;
+            font-size: 2em;
+            text-align: right;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .button {
+            padding: 20px;
+            font-size: 1.5em;
+            background: #dcdcdc;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button.operation {
+            background: #ffa07a;
+        }
+        .button.equal {
+            background: #90ee90;
+            grid-column: span 2;
+        }
+        .button.clear {
+            background: #ff6f61;
+            grid-column: span 2;
+        }
+        .history {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .history-entry {
+            background: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="display" id="display" disabled>
+        <div class="buttons">
+            <button class="button" onclick="appendNumber(7)">7</button>
+            <button class="button" onclick="appendNumber(8)">8</button>
+            <button class="button" onclick="appendNumber(9)">9</button>
+            <button class="button operation" onclick="appendOperation('/')">/</button>
+            <button class="button" onclick="appendNumber(4)">4</button>
+            <button class="button" onclick="appendNumber(5)">5</button>
+            <button class="button" onclick="appendNumber(6)">6</button>
+            <button class="button operation" onclick="appendOperation('*')">*</button>
+            <button class="button" onclick="appendNumber(1)">1</button>
+            <button class="button" onclick="appendNumber(2)">2</button>
+            <button class="button" onclick="appendNumber(3)">3</button>
+            <button class="button operation" onclick="appendOperation('-')">-</button>
+            <button class="button" onclick="appendNumber(0)">0</button>
+            <button class="button" onclick="appendDot()">.</button>
+            <button class="button equal" onclick="calculate()">=</button>
+            <button class="button operation" onclick="appendOperation('+')">+</button>
+            <button class="button clear" onclick="clearDisplay()">C</button>
+        </div>
+        <h2>History Of Calculation</h2>
+        <div class="history" id="history"></div>
+    </div>
+    <script>
+        let display = document.getElementById('display');
+        let history = document.getElementById('history');
+        let currentInput = '';
+        let historyList = [];
+
+        function appendNumber(number) {
+            currentInput += number;
+            display.value = currentInput;
+        }
+
+        function appendOperation(operation) {
+            currentInput += ' ' + operation + ' ';
+            display.value = currentInput;
+        }
+
+        function appendDot() {
+            if (!currentInput.includes('.')) {
+                currentInput += '.';
+                display.value = currentInput;
+            }
+        }
+
+        function calculate() {
+            try {
+                let result = eval(currentInput);
+                display.value = result;
+                historyList.push(currentInput + ' = ' + result);
+                updateHistory();
+                currentInput = '';
+            } catch (e) {
+                display.value = 'Error';
+                currentInput = '';
+            }
+        }
+
+        function clearDisplay() {
+            currentInput = '';
+            display.value = '';
+        }
+
+        function updateHistory() {
+            history.innerHTML = '';
+            historyList.forEach(entry => {
+                let div = document.createElement('div');
+                div.className = 'history-entry';
+                div.innerText = entry;
+                history.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
